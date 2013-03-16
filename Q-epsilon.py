@@ -5,7 +5,7 @@ import random
 import matplotlib.pyplot as plt
 
 M = {}
-epsilon = 0.2
+epsilon = 0.0
 # find max Q function for s and a
 def max_q(M):
     tmp = []
@@ -38,7 +38,7 @@ if __name__ == '__main__':
             M[item]['action']['up']['dest'] = (M[item]['label'][0]-2)*3+M[item]['label'][1]-1
     for item in range(9):
         for a in M[item]['action']:
-            M[item]['action'][a]['q'] = 0
+            M[item]['action'][a]['q'] = random.randint(0,9)*0.0001
             if M[item]['action'][a]['dest'] == 5:
                 M[item]['action'][a]['reward'] = 100
             else:
@@ -49,13 +49,13 @@ if __name__ == '__main__':
     M['table'] = []
     M['record'] = [300]
     M['abs'] = []
-    M['sum'] = [0]
+
     for i in range(9):
         M['table'].append([0,0,0,0])
-
+            
     #Q learning iteration
     while True:
-        #random pick a state
+    #random pick a state
         state = random.randint(0,8)
         while state != 5:
             if state == 5:
@@ -67,7 +67,7 @@ if __name__ == '__main__':
                     M[state]['action'][a]['q'] = 0.9*max_q(M[M[state]['action'][a]['dest']])
             #find optimal action in this state
             for a in M[state]['action']:
-                if  M[state]['action'][a]['q'] == max_q(M[state]['action'][a]['q']):
+                if  M[state]['action'][a]['q'] == max_q(M[state]):
                     a_prime = a
             #epsilon-greedy
             factor = random.randint(0,9)
@@ -83,12 +83,13 @@ if __name__ == '__main__':
                 s += M[item]['action'][a]['q']
         M['record'].append(s)
         M['abs'].append(abs(M['record'][-1]-M['record'][-2]))
-        M['sum'].append(M['sum'][-1]+M['abs'][-1])
+
+        #termination condition
         if sum(M['abs'][-10:]) == 0:
             break
 
 
-    #fill in data
+        #fill in data
     for item in range(9):
         if item != 5:
             for a in M[item]['action']:
@@ -104,6 +105,7 @@ if __name__ == '__main__':
         for j in range(4):
             print str(M['table'][i][j])+'\t',
         print
-    print M['sum']
-    plt.plot(M['sum'])
+
+
+    plt.plot(M['abs'])
     plt.show()

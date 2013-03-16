@@ -47,7 +47,6 @@ if __name__ == '__main__':
     M['table'] = []
     M['record'] = [300]
     M['abs'] = []
-    M['sum'] = [0]
     for i in range(9):
         M['table'].append([0,0,0,0])
 
@@ -72,7 +71,8 @@ if __name__ == '__main__':
                 s += M[item]['action'][a]['q']
         M['record'].append(s)
         M['abs'].append(abs(M['record'][-1]-M['record'][-2]))
-        M['sum'].append(M['sum'][-1]+M['abs'][-1])
+
+        #termination condition
         if sum(M['abs'][-10:]) == 0:
             break
 
@@ -93,6 +93,6 @@ if __name__ == '__main__':
         for j in range(4):
             print str(M['table'][i][j])+'\t',
         print
-    print M['sum']
-    plt.plot(M['sum'])
+
+    plt.plot(M['abs'])
     plt.show()
