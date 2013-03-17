@@ -62,9 +62,9 @@ if __name__ == '__main__':
                 break
             for a in M[state]['action']:
                 if M[state]['action'][a]['dest'] == 5:
-                    M[state]['action'][a]['q'] = 100
+                    M[state]['action'][a]['q'] = M[state]['action'][a]['reward']+0
                 else:
-                    M[state]['action'][a]['q'] = 0.9*max_q(M[M[state]['action'][a]['dest']])
+                    M[state]['action'][a]['q'] = M[state]['action'][a]['reward']+0.9*max_q(M[M[state]['action'][a]['dest']])
             #find optimal action in this state
             for a in M[state]['action']:
                 if  M[state]['action'][a]['q'] == max_q(M[state]):
