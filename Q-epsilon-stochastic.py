@@ -57,7 +57,7 @@ if __name__ == '__main__':
 
     #Q learning iteration
     while True:
-        # random pick a state
+        # randomly pick a state
         state = random.randint(0,8)
         while state != 5:
             if state == 5:
@@ -72,7 +72,7 @@ if __name__ == '__main__':
                     M[state]['action'][a]['q'] = (1-alpha)*M[state]['action'][a]['q']+alpha*(M[state]['action'][a]['reward']+0.9*max_q(M[M[state]['action'][a]['dest']]))
                     M[state]['action'][a]['visited'] += 1
                     
-            #find optimal action in this state
+            #find optimal action for this state
             for a in M[state]['action']:
                 if  M[state]['action'][a]['q'] == max_q(M[state]):
                     a_prime = a
