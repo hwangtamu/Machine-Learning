@@ -60,10 +60,10 @@ if __name__ == '__main__':
             #random pick a legal action
             a = list(M[state]['action'])[random.randint(0,len(M[state]['action'])-1)]
             if M[state]['action'][a]['dest'] == 5:
-                M[state]['action'][a]['q'] = 100
+                M[state]['action'][a]['q'] = M[state]['action'][a]['reward']+0
                 break
             else:
-                M[state]['action'][a]['q'] = 0.9*max_q(M[M[state]['action'][a]['dest']])
+                M[state]['action'][a]['q'] = M[state]['action'][a]['reward']+0.9*max_q(M[M[state]['action'][a]['dest']])
                 state = M[state]['action'][a]['dest']
         s = 0
         for item in range(9):
