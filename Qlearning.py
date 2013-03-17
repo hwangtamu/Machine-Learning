@@ -52,12 +52,12 @@ if __name__ == '__main__':
 
     #Q learning iteration
     while True:
-        # random pick a state
+        # randomly pick a state
         state = random.randint(0,8)
         while state != 5:
             if state == 5:
                 break
-            #random pick a legal action
+            #randomly pick a legal action
             a = list(M[state]['action'])[random.randint(0,len(M[state]['action'])-1)]
             if M[state]['action'][a]['dest'] == 5:
                 M[state]['action'][a]['q'] = M[state]['action'][a]['reward']+0
