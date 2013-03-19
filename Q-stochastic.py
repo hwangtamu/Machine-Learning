@@ -4,6 +4,8 @@ __author__ = 'han wang'
 import random
 import matplotlib.pyplot as plt
 M = {}
+delta = 0.76
+E = [2,4,8]
 
 # find max Q function for s and a
 def max_q(M):
@@ -38,12 +40,14 @@ if __name__ == '__main__':
     for item in range(9):
         for a in M[item]['action']:
             M[item]['action'][a]['q'] = float(0)
-            M[item]['action'][a]['visited'] = 0
+            M[item]['action'][a]['visited'] = []
             if M[item]['action'][a]['dest'] == 5:
                 M[item]['action'][a]['reward'] = 100
             else:
                 M[item]['action'][a]['reward'] = 0
     M[5]['action'] = {}
+
+
 
     #some tables required
     M['table'] = []
@@ -59,17 +63,32 @@ if __name__ == '__main__':
         while state != 5:
             if state == 5:
                 break
-                #randomly pick a legal action
+            #randomly pick a legal action
             a = list(M[state]['action'])[random.randint(0,len(M[state]['action'])-1)]
-            alpha = 1/float(2+M[state]['action'][a]['visited'])
-            if M[state]['action'][a]['dest'] == 5:
-                M[state]['action'][a]['q'] = (1-alpha)*M[state]['action'][a]['q']+alpha*(M[state]['action'][a]['reward']+0)
-                M[state]['action'][a]['visited'] += 1
-                break
-            else:
-                M[state]['action'][a]['q'] = (1-alpha)*M[state]['action'][a]['q']+alpha*(M[state]['action'][a]['reward']+0.9*max_q(M[M[state]['action'][a]['dest']]))
-                M[state]['action'][a]['visited'] += 1
+            alt = [x for x in list(M[state]['action']) if x != a][random.randint(0,len(M[state]['action'])-2)]
+            alpha = 1/float(2+len(M[state]['action'][a]['visited']))
+            d = random.randint(0,99)
+            if d < delta*100:
+                if M[state]['action'][a]['dest'] == 5:
+                    M[state]['action'][a]['q'] = (1-alpha)*M[state]['action'][a]['q']+alpha*(100)
+                    M[state]['action'][a]['visited'].append(100)
+                    break
+                else:
+                    M[state]['action'][a]['q'] = (1-alpha)*M[state]['action'][a]['q']+ \
+                                                 alpha*(0.9*max_q(M[M[state]['action'][a]['dest']]))
+                    M[state]['action'][a]['visited'].append(0)
                 state = M[state]['action'][a]['dest']
+            if d >= delta*100:
+                if M[state]['action'][alt]['dest'] == 5:
+                    M[state]['action'][a]['q'] = (1-alpha)*M[state]['action'][a]['q']+alpha*(100)
+                    M[state]['action'][a]['visited'].append(100)
+                    break
+                else:
+                    M[state]['action'][a]['q'] = (1-alpha)*M[state]['action'][a]['q']+ \
+                                                 alpha*(0.9*max_q(M[M[state]['action'][alt]['dest']]))
+                    M[state]['action'][a]['visited'].append(0)
+                state = M[state]['action'][alt]['dest']
+
         s = 0
         for item in range(9):
             for a in M[item]['action']:
@@ -98,6 +117,8 @@ if __name__ == '__main__':
         for j in range(4):
             print str(M['table'][i][j])+'\t',
         print
-
+    for i in E:
+        for a in M[i]['action']:
+            print M[i]['name'],a,float(sum(M[i]['action'][a]['visited']))/len(M[i]['action'][a]['visited'])
     plt.plot(M['abs'])
     plt.show()
