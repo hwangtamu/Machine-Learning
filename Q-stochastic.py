@@ -115,7 +115,7 @@ if __name__ == '__main__':
     for i in range(len(M['table'])):
         print M[i]['name']+'\t',
         for j in range(4):
-            print str(M['table'][i][j])+'\t',
+            print str('%.2f' % M['table'][i][j])+'\t',
         print
     for i in E:
         for a in M[i]['action']:
