@@ -5,7 +5,7 @@ import random
 import matplotlib.pyplot as plt
 
 M = {}
-epsilon = 0.0
+epsilon = 1.0
 # find max Q function for s and a
 def max_q(M):
     tmp = []
@@ -47,7 +47,7 @@ if __name__ == '__main__':
 
     #some tables required
     M['table'] = []
-    M['record'] = [300]
+    M['record'] = [0]
     M['abs'] = []
 
     for i in range(9):
@@ -55,28 +55,29 @@ if __name__ == '__main__':
             
     #Q learning iteration
     while True:
-    #randomly pick a state
+    #random pick a state
         state = random.randint(0,8)
         while state != 5:
             if state == 5:
                 break
-            for a in M[state]['action']:
-                if M[state]['action'][a]['dest'] == 5:
-                    M[state]['action'][a]['q'] = M[state]['action'][a]['reward']+0
-                else:
-                    M[state]['action'][a]['q'] = M[state]['action'][a]['reward']+0.9*max_q(M[M[state]['action'][a]['dest']])
-            #find optimal action for this state
+            #find optimal action in this state
             for a in M[state]['action']:
                 if  M[state]['action'][a]['q'] == max_q(M[state]):
                     a_prime = a
+
             #epsilon-greedy
             factor = random.randint(0,9)
             if factor < epsilon*10:
                 a = list(M[state]['action'])[random.randint(0,len(M[state]['action'])-1)]
-                state = M[state]['action'][a]['dest']
             else:
                 a = a_prime
-                state = M[state]['action'][a]['dest']
+
+            if M[state]['action'][a]['dest'] == 5:
+                M[state]['action'][a]['q'] = M[state]['action'][a]['reward']+0
+            else:
+                M[state]['action'][a]['q'] = M[state]['action'][a]['reward']+0.9*max_q(M[M[state]['action'][a]['dest']])
+
+            state = M[state]['action'][a]['dest']
         s = 0
         for item in range(9):
             for a in M[item]['action']:
@@ -89,7 +90,7 @@ if __name__ == '__main__':
             break
 
 
-        #fill in data
+    #fill in data
     for item in range(9):
         if item != 5:
             for a in M[item]['action']:
@@ -101,9 +102,9 @@ if __name__ == '__main__':
         print M['actions'][i]+'\t',
     print
     for i in range(len(M['table'])):
-        print M[i]['name']+'\t',
+        print  M[i]['name']+'\t',
         for j in range(4):
-            print str(M['table'][i][j])+'\t',
+            print str('%.2f' % M['table'][i][j])+'\t',
         print
 
 
