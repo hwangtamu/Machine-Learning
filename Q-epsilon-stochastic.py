@@ -5,7 +5,7 @@ __author__ = 'hanwang'
 import random
 import matplotlib.pyplot as plt
 M = {}
-epsilon = 0.2
+epsilon = 0.5
 delta = 0.76
 E = [2,4,8]
 
@@ -52,7 +52,7 @@ if __name__ == '__main__':
     
     #some tables required
     M['table'] = []
-    M['record'] = [300]
+    M['record'] = [0]
     M['abs'] = []
    
     for i in range(9):
@@ -65,31 +65,6 @@ if __name__ == '__main__':
         while state != 5:
             if state == 5:
                 break
-            for a in M[state]['action']:
-                alt = [x for x in list(M[state]['action']) if x != a][random.randint(0,len(M[state]['action'])-2)]
-                alpha = 1/float(2+len(M[state]['action'][a]['visited']))
-                d = random.randint(0,99)
-                if d < delta*100:
-                    if M[state]['action'][a]['dest'] == 5:
-                        M[state]['action'][a]['q'] = (1-alpha)*M[state]['action'][a]['q']+alpha*(100)
-                        M[state]['action'][a]['visited'].append(100)
-                        break
-                    else:
-                        M[state]['action'][a]['q'] = (1-alpha)*M[state]['action'][a]['q']+ \
-                                                     alpha*(0.9*max_q(M[M[state]['action'][a]['dest']]))
-                        M[state]['action'][a]['visited'].append(0)
-                    #state = M[state]['action'][a]['dest']
-                if d >= delta*100:
-                    if M[state]['action'][alt]['dest'] == 5:
-                        M[state]['action'][a]['q'] = (1-alpha)*M[state]['action'][a]['q']+alpha*(100)
-                        M[state]['action'][a]['visited'].append(100)
-                        break
-                    else:
-                        M[state]['action'][a]['q'] = (1-alpha)*M[state]['action'][a]['q']+ \
-                                                 alpha*(0.9*max_q(M[M[state]['action'][alt]['dest']]))
-                        M[state]['action'][a]['visited'].append(0)
-                    #state = M[state]['action'][alt]['dest']
-                    
             #find optimal action for this state
             for a in M[state]['action']:
                 if  M[state]['action'][a]['q'] == max_q(M[state]):
@@ -98,10 +73,35 @@ if __name__ == '__main__':
             factor = random.randint(0,9)
             if factor < epsilon*10:
                 a = list(M[state]['action'])[random.randint(0,len(M[state]['action'])-1)]
-                state = M[state]['action'][a]['dest']
             else:
                 a = a_prime
-                state = M[state]['action'][a]['dest']
+
+
+            alt = [x for x in list(M[state]['action']) if x != a][random.randint(0,len(M[state]['action'])-2)]
+            alpha = 1/float(2+len(M[state]['action'][a]['visited']))
+            d = random.randint(0,99)
+            if d < delta*100:
+                if M[state]['action'][a]['dest'] == 5:
+                    M[state]['action'][a]['q'] = (1-alpha)*M[state]['action'][a]['q']+alpha*(100)
+                    M[state]['action'][a]['visited'].append(100)
+                    break
+                else:
+                    M[state]['action'][a]['q'] = (1-alpha)*M[state]['action'][a]['q']+ \
+                                                 alpha*(0.9*max_q(M[M[state]['action'][a]['dest']]))
+                    M[state]['action'][a]['visited'].append(0)
+                    state = M[state]['action'][a]['dest']
+            if d >= delta*100:
+                if M[state]['action'][alt]['dest'] == 5:
+                    M[state]['action'][a]['q'] = (1-alpha)*M[state]['action'][a]['q']+alpha*(100)
+                    M[state]['action'][a]['visited'].append(100)
+                    break
+                else:
+                    M[state]['action'][a]['q'] = (1-alpha)*M[state]['action'][a]['q']+ \
+                                             alpha*(0.9*max_q(M[M[state]['action'][alt]['dest']]))
+                    M[state]['action'][a]['visited'].append(0)
+                    state = M[state]['action'][alt]['dest']
+                    
+
 
         s = 0
         for item in range(9):
@@ -127,12 +127,15 @@ if __name__ == '__main__':
     for i in range(len(M['table'])):
         print M[i]['name']+'\t',
         for j in range(4):
-            print str(M['table'][i][j])+'\t',
+            print str("%.2f" % M['table'][i][j])+'\t',
         print
     print
     for i in E:
         for a in M[i]['action']:
-            print M[i]['name'],a,float(sum(M[i]['action'][a]['visited']))/len(M[i]['action'][a]['visited'])
+            if len(M[i]['action'][a]['visited']) != 0:
+                print M[i]['name'],a,float(sum(M[i]['action'][a]['visited']))/len(M[i]['action'][a]['visited'])
+            else:
+                print M[i]['name'],a,0
     plt.plot(M['abs'])
     plt.show()
 
