@@ -52,12 +52,12 @@ if __name__ == '__main__':
 
     #Q learning iteration
     while True:
-        # randomly pick a state
+        # random pick a state
         state = random.randint(0,8)
         while state != 5:
             if state == 5:
                 break
-            #randomly pick a legal action
+            #random pick a legal action
             a = list(M[state]['action'])[random.randint(0,len(M[state]['action'])-1)]
             if M[state]['action'][a]['dest'] == 5:
                 M[state]['action'][a]['q'] = M[state]['action'][a]['reward']+0
@@ -91,7 +91,7 @@ if __name__ == '__main__':
     for i in range(len(M['table'])):
         print M[i]['name']+'\t',
         for j in range(4):
-            print str(M['table'][i][j])+'\t',
+            print str('%.2f' % M['table'][i][j])+'\t',
         print
 
     plt.plot(M['abs'])
